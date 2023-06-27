@@ -1,5 +1,10 @@
-package main
+package vl
 
-func process(vl *VL, origLine []byte) ([]string) {
-	return splitter.Split(string(origLine), len(vl.header.columns))
+type VL struct {
+	Count  int
+	Header *Header
+}
+
+func Process(v *VL, origLine []byte) ([]string) {
+	return splitter.Split(string(origLine), len(v.Header.Columns))
 }
