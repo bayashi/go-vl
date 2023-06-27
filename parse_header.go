@@ -1,28 +1,28 @@
-package main
+package vl
 
 import (
 	"regexp"
 )
 
-type column struct {
-	label string
+type Column struct {
+	Label string
 }
 
-type header struct {
-	columns []*column
+type Header struct {
+	Columns []*Column
 }
 
 var splitter = regexp.MustCompile(`\s\s+`)
 
-func parseHeader(line []byte) *header {
+func ParseHeader(line []byte) *Header {
 	labels := splitter.Split(string(line), -1)
 
-	hs := &header{}
+	hs := &Header{}
 	for _, label := range labels {
-		c := &column{
-			label: label,
+		c := &Column{
+			Label: label,
 		}
-		hs.columns = append(hs.columns, c)
+		hs.Columns = append(hs.Columns, c)
 	}
 
 	return hs

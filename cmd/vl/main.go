@@ -8,14 +8,9 @@ import (
 	"syscall"
 
 	verticaltable "github.com/bayashi/go-verticaltable"
+	vl "github.com/bayashi/go-vl"
 	"golang.org/x/term"
 )
-
-type VL struct {
-	o      *options
-	count  int
-	header *header
-}
 
 func main() {
 	err := run()
@@ -28,9 +23,9 @@ func main() {
 }
 
 func run() error {
-	vl := &VL{
-		o:     parseArgs(),
-		count: 0,
+	o := parseArgs()
+	v := &vl.VL{
+		Count: 0,
 	}
 
 	if term.IsTerminal(int(syscall.Stdin)) {
@@ -39,7 +34,7 @@ func run() error {
 
 	s := bufio.NewScanner(os.Stdin)
 
-	out, closer := Pager(vl.o)
+	out, closer := Pager(o)
 	defer closer()
 
 	for s.Scan() {
@@ -49,21 +44,21 @@ func run() error {
 			continue
 		}
 
-		if vl.count == 0 {
-			vl.header = parseHeader(line)
+		if v.Count == 0 {
+			v.Header = vl.ParseHeader(line)
 		}
 
-		if vl.count > 0 {
-			elements := process(vl, line)
+		if v.Count > 0 {
+			elements := vl.Process(v, line)
 			vt := verticaltable.NewTable(out, vtOpts())
-			vt.Header(strconv.Itoa(vl.count))
+			vt.Header(strconv.Itoa(v.Count))
 			for i, elem := range elements {
-				vt.Row(vl.header.columns[i].label, elem)
+				vt.Row(v.Header.Columns[i].Label, elem)
 			}
 			vt.Render()
 		}
 
-		vl.count++
+		v.Count++
 	}
 
 	return nil

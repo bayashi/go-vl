@@ -39,7 +39,7 @@ RESTARTS: 0
 ## Installation
 
 ```cmd
-go install github.com/bayashi/go-vl@latest
+go install github.com/bayashi/go-vl/cmd/vl@latest
 ```
 
 ## License
