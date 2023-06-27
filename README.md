@@ -11,7 +11,7 @@
 
 For example, this is output of `kubectl get pods`.
 
-```sh
+```cmd
 $ kubectl get pods
 NAME                         READY     STATUS    RESTARTS   AGE
 hello-web-4017757401-ntgdb   1/1       Running   0          9s
@@ -20,7 +20,7 @@ hello-web-4017757401-pc4j9   1/1       Running   0          9s
 
 The `vl` filter makes it vertical like below.
 
-```sh
+```
 $ kubectl get pods | vl
 ********** 1 ********************
     NAME: hello-web-4017757401-ntgdb
