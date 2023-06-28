@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"runtime"
 	"runtime/debug"
+	"strings"
 
 	flag "github.com/spf13/pflag"
 )
@@ -24,6 +25,8 @@ type options struct {
 	noPager bool
 	grep    []string
 	grepRe  []*regexp.Regexp
+	label   string
+	labels  []string
 }
 
 func parseArgs() *options {
@@ -38,6 +41,7 @@ func parseArgs() *options {
 	flag.BoolVarP(&flagVersion, "version", "v", false, "Show version and build info and exit")
 	flag.BoolVarP(&o.noPager, "no-pager", "", false, "Output without pager")
 	flag.StringArrayVarP(&o.grep, "grep", "g", []string{}, "Grep condition to filter lines")
+	flag.StringVarP(&o.label, "label", "l", "", "Show only matching items of labels")
 
 	flag.Parse()
 
@@ -52,6 +56,12 @@ func parseArgs() *options {
 
 	for _, r := range o.grep {
 		o.grepRe = append(o.grepRe, regexp.MustCompile(regexp.QuoteMeta(r)))
+	}
+
+	if strings.Contains(o.label, ",") {
+		o.labels = strings.Split(o.label, ",")
+	} else if o.label != "" {
+		o.labels = append(o.labels, o.label)
 	}
 
 	return o

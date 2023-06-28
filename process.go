@@ -4,6 +4,7 @@ import "regexp"
 
 type Options struct {
 	GrepRe []*regexp.Regexp
+	Labels []string
 }
 
 type VL struct {
