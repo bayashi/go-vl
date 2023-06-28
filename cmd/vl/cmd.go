@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"runtime"
 	"runtime/debug"
 
@@ -21,6 +22,8 @@ var (
 
 type options struct {
 	noPager bool
+	grep    []string
+	grepRe  []*regexp.Regexp
 }
 
 func parseArgs() *options {
@@ -34,6 +37,7 @@ func parseArgs() *options {
 	flag.BoolVarP(&flagHelp, "help", "h", false, "Show help (This message) and exit")
 	flag.BoolVarP(&flagVersion, "version", "v", false, "Show version and build info and exit")
 	flag.BoolVarP(&o.noPager, "no-pager", "", false, "Output without pager")
+	flag.StringArrayVarP(&o.grep, "grep", "g", []string{}, "Grep condition to filter lines")
 
 	flag.Parse()
 
@@ -44,6 +48,10 @@ func parseArgs() *options {
 	if flagVersion {
 		putErr(versionDetails())
 		os.Exit(exitOK)
+	}
+
+	for _, r := range o.grep {
+		o.grepRe = append(o.grepRe, regexp.MustCompile(regexp.QuoteMeta(r)))
 	}
 
 	return o

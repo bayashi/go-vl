@@ -26,6 +26,9 @@ func run() error {
 	o := parseArgs()
 	v := &vl.VL{
 		Count: 0,
+		Options: &vl.Options{
+			GrepRe: o.grepRe,
+		},
 	}
 
 	if term.IsTerminal(int(syscall.Stdin)) {
@@ -49,6 +52,9 @@ func run() error {
 		}
 
 		if v.Count > 0 {
+			if len(v.Options.GrepRe) > 0 && vl.IsFiltered(v, line) {
+				continue
+			}
 			elements := vl.Process(v, line)
 			vt := verticaltable.NewTable(out, vtOpts())
 			vt.Header(strconv.Itoa(v.Count))
