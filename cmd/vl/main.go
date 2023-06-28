@@ -28,6 +28,7 @@ func run() error {
 		Count: 0,
 		Options: &vl.Options{
 			GrepRe: o.grepRe,
+			Labels: o.labels,
 		},
 	}
 
@@ -48,7 +49,7 @@ func run() error {
 		}
 
 		if v.Count == 0 {
-			v.Header = vl.ParseHeader(line)
+			v.Header = vl.ParseHeader(line, v.Options)
 		}
 
 		if v.Count > 0 {
@@ -59,6 +60,9 @@ func run() error {
 			vt := verticaltable.NewTable(out, vtOpts())
 			vt.Header(strconv.Itoa(v.Count))
 			for i, elem := range elements {
+				if !v.Header.Columns[i].Show {
+					continue
+				}
 				vt.Row(v.Header.Columns[i].Label, elem)
 			}
 			vt.Render()
