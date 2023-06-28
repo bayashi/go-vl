@@ -36,6 +36,14 @@ func run() error {
 		os.Exit(exitOK)
 	}
 
+	var vtOpts = &verticaltable.VTOptions{
+		HeaderFormat:  "********** %s **********",
+		ShowCount:     false,
+		CountFormat:   "%d. ",
+		KvSeparator:   ": ",
+		KeyAlignRight: true,
+	}
+
 	s := bufio.NewScanner(os.Stdin)
 
 	out, closer := Pager(o)
@@ -57,7 +65,7 @@ func run() error {
 				continue
 			}
 			elements := vl.Process(v, line)
-			vt := verticaltable.NewTable(out, vtOpts())
+			vt := verticaltable.NewTable(out, vtOpts)
 			vt.Header(strconv.Itoa(v.Count))
 			for i, elem := range elements {
 				if !v.Header.Columns[i].Show {
@@ -72,14 +80,4 @@ func run() error {
 	}
 
 	return nil
-}
-
-func vtOpts() *verticaltable.VTOptions {
-	return &verticaltable.VTOptions{
-		HeaderFormat:  "********** %s **********",
-		ShowCount:     false,
-		CountFormat:   "%d. ",
-		KvSeparator:   ": ",
-		KeyAlignRight: true,
-	}
 }
