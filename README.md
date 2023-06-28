@@ -36,6 +36,31 @@ RESTARTS: 0
      AGE: 9s
 ```
 
+`--grep` option works.
+
+```
+$ kubectl get pods | vl --grep pc4j9
+********** 1 **********
+    NAME: hello-web-4017757401-pc4j9
+   READY: 1/1
+  STATUS: Running
+RESTARTS: 0
+     AGE: 9s
+```
+
+## Full Options
+
+```
+$ vl --help
+Usage: some-command | vl OPTIONS
+Options:
+  -g, --grep stringArray   Grep condition to filter lines
+  -h, --help               Show help (This message) and exit
+  -l, --label string       Show only matching items of labels
+      --no-pager           Output without pager
+  -v, --version            Show version and build info and exit
+```
+
 ## Installation
 
 ```cmd
