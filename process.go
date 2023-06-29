@@ -14,7 +14,7 @@ type VL struct {
 }
 
 // true:filtering, false:show
-func IsFiltered(v *VL, origLine []byte) bool {
+func (v *VL) IsFiltered(origLine []byte) bool {
 	for _, r := range v.Options.GrepRe {
 		if !r.Match(origLine) {
 			return true
@@ -24,6 +24,6 @@ func IsFiltered(v *VL, origLine []byte) bool {
 	return false
 }
 
-func Process(v *VL, origLine []byte) []string {
+func (v *VL) Process(origLine []byte) []string {
 	return splitter.Split(string(origLine), len(v.Header.Columns))
 }

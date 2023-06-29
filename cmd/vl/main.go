@@ -57,14 +57,14 @@ func run() error {
 		}
 
 		if v.Count == 0 {
-			v.Header = vl.ParseHeader(line, v.Options)
+			v.Header = v.ParseHeader(line)
 		}
 
 		if v.Count > 0 {
-			if len(v.Options.GrepRe) > 0 && vl.IsFiltered(v, line) {
+			if len(v.Options.GrepRe) > 0 && v.IsFiltered(line) {
 				continue
 			}
-			elements := vl.Process(v, line)
+			elements := v.Process(line)
 			vt := verticaltable.NewTable(out, vtOpts)
 			vt.Header(strconv.Itoa(v.Count))
 			for i, elem := range elements {

@@ -15,14 +15,14 @@ type Header struct {
 
 var splitter = regexp.MustCompile(`\s\s+`)
 
-func ParseHeader(line []byte, o *Options) *Header {
+func (v *VL) ParseHeader(line []byte) *Header {
 	labels := splitter.Split(string(line), -1)
 
 	hs := &Header{}
 	for _, label := range labels {
 		c := &Column{
 			Label: label,
-			Show: isShownLabel(label, o.Labels),
+			Show: isShownLabel(label, v.Options.Labels),
 		}
 		hs.Columns = append(hs.Columns, c)
 	}
