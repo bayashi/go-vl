@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"syscall"
 
 	verticaltable "github.com/bayashi/go-verticaltable"
@@ -29,6 +27,14 @@ func run() error {
 		Options: &vl.Options{
 			GrepRe: o.grepRe,
 			Labels: o.labels,
+			VtOpts: &verticaltable.VTOptions{
+				HeaderFormat:  "********** %s **********",
+				ShowCount:     false,
+				CountFormat:   "%d. ",
+				KvSeparator:   ": ",
+				KeyAlignRight: true,
+			},
+			NoPager: o.noPager,
 		},
 	}
 
@@ -36,50 +42,10 @@ func run() error {
 		os.Exit(exitOK)
 	}
 
-	s := bufio.NewScanner(os.Stdin)
-
-	out, closer := Pager(o)
+	out, closer := Pager(v.Options.NoPager)
 	defer closer()
 
-	for s.Scan() {
-		line := s.Bytes()
-
-		if len(line) == 0 {
-			continue
-		}
-
-		if v.Count == 0 {
-			v.Header = vl.ParseHeader(line, v.Options)
-		}
-
-		if v.Count > 0 {
-			if len(v.Options.GrepRe) > 0 && vl.IsFiltered(v, line) {
-				continue
-			}
-			elements := vl.Process(v, line)
-			vt := verticaltable.NewTable(out, vtOpts())
-			vt.Header(strconv.Itoa(v.Count))
-			for i, elem := range elements {
-				if !v.Header.Columns[i].Show {
-					continue
-				}
-				vt.Row(v.Header.Columns[i].Label, elem)
-			}
-			vt.Render()
-		}
-
-		v.Count++
-	}
+	v.Process(out)
 
 	return nil
-}
-
-func vtOpts() *verticaltable.VTOptions {
-	return &verticaltable.VTOptions{
-		HeaderFormat:  "********** %s **********",
-		ShowCount:     false,
-		CountFormat:   "%d. ",
-		KvSeparator:   ": ",
-		KeyAlignRight: true,
-	}
 }

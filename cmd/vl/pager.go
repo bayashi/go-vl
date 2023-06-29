@@ -16,8 +16,8 @@ const (
 	ENV_VALUE_NO_PAGER = "NOPAGER"
 )
 
-func Pager(o *options) (io.Writer, func()) {
-	if o.noPager {
+func Pager(noPager bool) (io.Writer, func()) {
+	if noPager {
 		return os.Stdout, func() {}
 	}
 
