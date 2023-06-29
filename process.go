@@ -29,6 +29,6 @@ func (v *VL) IsFiltered(origLine []byte) bool {
 	return false
 }
 
-func (v *VL) Process(origLine []byte) []string {
+func (v *VL) ProcessLine(origLine []byte) []string {
 	return splitter.Split(string(origLine), len(v.Header.Columns))
 }
