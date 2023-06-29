@@ -63,10 +63,10 @@ func run() error {
 			if len(v.Options.GrepRe) > 0 && v.IsFiltered(line) {
 				continue
 			}
-			elements := v.ProcessLine(line)
+
 			vt := verticaltable.NewTable(out, v.Options.VtOpts)
 			vt.Header(strconv.Itoa(v.Count))
-			for i, elem := range elements {
+			for i, elem := range v.ProcessLine(line) {
 				if !v.Header.Columns[i].Show {
 					continue
 				}
