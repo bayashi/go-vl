@@ -44,7 +44,7 @@ func (v *VL) Process(out io.Writer) {
 
 			vt := verticaltable.NewTable(out, v.Options.VtOpts)
 			vt.Header(strconv.Itoa(v.Count))
-			for i, elem := range v.processLine(line) {
+			for i, elem := range v.parseLine(line) {
 				if !v.Header.Columns[i].Show {
 					continue
 				}
@@ -68,6 +68,6 @@ func (v *VL) isFiltered(origLine []byte) bool {
 	return false
 }
 
-func (v *VL) processLine(origLine []byte) []string {
+func (v *VL) parseLine(origLine []byte) []string {
 	return splitter.Split(string(origLine), len(v.Header.Columns))
 }
