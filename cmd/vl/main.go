@@ -29,19 +29,18 @@ func run() error {
 		Options: &vl.Options{
 			GrepRe: o.grepRe,
 			Labels: o.labels,
+			VtOpts: &verticaltable.VTOptions{
+				HeaderFormat:  "********** %s **********",
+				ShowCount:     false,
+				CountFormat:   "%d. ",
+				KvSeparator:   ": ",
+				KeyAlignRight: true,
+			},
 		},
 	}
 
 	if term.IsTerminal(int(syscall.Stdin)) {
 		os.Exit(exitOK)
-	}
-
-	var vtOpts = &verticaltable.VTOptions{
-		HeaderFormat:  "********** %s **********",
-		ShowCount:     false,
-		CountFormat:   "%d. ",
-		KvSeparator:   ": ",
-		KeyAlignRight: true,
 	}
 
 	s := bufio.NewScanner(os.Stdin)
@@ -65,7 +64,7 @@ func run() error {
 				continue
 			}
 			elements := v.Process(line)
-			vt := verticaltable.NewTable(out, vtOpts)
+			vt := verticaltable.NewTable(out, v.Options.VtOpts)
 			vt.Header(strconv.Itoa(v.Count))
 			for i, elem := range elements {
 				if !v.Header.Columns[i].Show {

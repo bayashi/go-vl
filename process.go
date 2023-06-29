@@ -1,10 +1,15 @@
 package vl
 
-import "regexp"
+import (
+	"regexp"
+
+	verticaltable "github.com/bayashi/go-verticaltable"
+)
 
 type Options struct {
 	GrepRe []*regexp.Regexp
 	Labels []string
+	VtOpts *verticaltable.VTOptions
 }
 
 type VL struct {
