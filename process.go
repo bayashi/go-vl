@@ -10,6 +10,15 @@ import (
 	verticaltable "github.com/bayashi/go-verticaltable"
 )
 
+type Column struct {
+	Label string
+	Show  bool
+}
+
+type Header struct {
+	Columns []*Column
+}
+
 type Options struct {
 	GrepRe  []*regexp.Regexp
 	Labels  []string
@@ -28,33 +37,67 @@ func (v *VL) Process(out io.Writer) {
 
 	for s.Scan() {
 		line := s.Bytes()
-
-		if len(line) == 0 {
-			continue
-		}
-
-		if v.Count == 0 {
-			v.Header = v.ParseHeader(line)
-		}
-
-		if v.Count > 0 {
-			if len(v.Options.GrepRe) > 0 && v.isFiltered(line) {
-				continue
-			}
-
-			vt := verticaltable.NewTable(out, v.Options.VtOpts)
-			vt.Header(strconv.Itoa(v.Count))
-			for i, elem := range v.parseLine(line) {
-				if !v.Header.Columns[i].Show {
-					continue
-				}
-				vt.Row(v.Header.Columns[i].Label, elem)
-			}
-			vt.Render()
-		}
-
-		v.Count++
+		v.processLine(out, line)
 	}
+}
+
+func (v *VL) processLine(out io.Writer, origLine []byte) {
+	if len(origLine) == 0 {
+		return
+	}
+
+	if v.Count == 0 {
+		v.Header = v.ParseHeader(origLine)
+	}
+
+	if v.Count > 0 {
+		if len(v.Options.GrepRe) > 0 && v.isFiltered(origLine) {
+			return
+		}
+
+		vt := verticaltable.NewTable(out, v.Options.VtOpts)
+		vt.Header(strconv.Itoa(v.Count))
+		for i, elem := range v.parseLine(origLine) {
+			if !v.Header.Columns[i].Show {
+				return
+			}
+			vt.Row(v.Header.Columns[i].Label, elem)
+		}
+		vt.Render()
+	}
+
+	v.Count++
+}
+
+var splitter = regexp.MustCompile(`\s\s+`)
+
+func (v *VL) ParseHeader(line []byte) *Header {
+	labels := splitter.Split(string(line), -1)
+
+	hs := &Header{}
+	for _, label := range labels {
+		c := &Column{
+			Label: label,
+			Show: isShownLabel(label, v.Options.Labels),
+		}
+		hs.Columns = append(hs.Columns, c)
+	}
+
+	return hs
+}
+
+func isShownLabel(label string, labels []string) bool {
+	if len(labels) == 0 {
+		return true
+	}
+
+	for _, l := range labels {
+		if l == label {
+			return true
+		}
+	}
+
+	return false
 }
 
 // true:filtering, false:show
