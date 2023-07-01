@@ -70,3 +70,34 @@ func Example_processLine_grep() {
 	// RESTARTS: 0
 	//      AGE: 9s
 }
+
+func Example_processLine_label() {
+	v := &VL{
+		Count: 0,
+		Options: &Options{
+			VtOpts: &verticaltable.VTOptions{
+				HeaderFormat:  "********** %s **********",
+				ShowCount:     false,
+				CountFormat:   "%d. ",
+				KvSeparator:   ": ",
+				KeyAlignRight: true,
+			},
+			NoPager: true,
+			Labels: []string{
+				"READY",
+				"STATUS",
+			},
+		},
+	}
+
+	v.processLine(os.Stdout, []byte("NAME                         READY     STATUS    RESTARTS   AGE"))
+	v.processLine(os.Stdout, []byte("hello-web-4017757401-ntgdb   1/1       Running   0          9s"))
+	v.processLine(os.Stdout, []byte("hello-web-4017757401-pc4j9   1/1       Running   0          9s"))
+	// Output:
+	// ********** 1 **********
+	//  READY: 1/1
+	// STATUS: Running
+	// ********** 2 **********
+	//  READY: 1/1
+	// STATUS: Running
+}
