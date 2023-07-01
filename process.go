@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 
 	verticaltable "github.com/bayashi/go-verticaltable"
 )
@@ -24,12 +25,14 @@ type Options struct {
 	Labels  []string
 	VtOpts  *verticaltable.VTOptions
 	NoPager bool
+	PS      bool
 }
 
 type VL struct {
-	Count   int
-	Header  *Header
-	Options *Options
+	Count    int
+	Header   *Header
+	Options  *Options
+	Splitter *regexp.Regexp
 }
 
 func (v *VL) Process(out io.Writer) {
@@ -69,16 +72,23 @@ func (v *VL) processLine(out io.Writer, origLine []byte) {
 	v.Count++
 }
 
-var splitter = regexp.MustCompile(`\s\s+`)
-
 func (v *VL) ParseHeader(line []byte) *Header {
-	labels := splitter.Split(string(line), -1)
+	var re string
+	if v.Options.PS {
+		re = `\s+`
+	} else {
+		re = `\s\s+`
+	}
+
+	v.Splitter = regexp.MustCompile(re)
+
+	labels := v.Splitter.Split(strings.TrimSpace(string(line)), -1)
 
 	hs := &Header{}
 	for _, label := range labels {
 		c := &Column{
 			Label: label,
-			Show: isShownLabel(label, v.Options.Labels),
+			Show:  isShownLabel(label, v.Options.Labels),
 		}
 		hs.Columns = append(hs.Columns, c)
 	}
@@ -112,5 +122,5 @@ func (v *VL) isFiltered(origLine []byte) bool {
 }
 
 func (v *VL) parseLine(origLine []byte) []string {
-	return splitter.Split(string(origLine), len(v.Header.Columns))
+	return v.Splitter.Split(string(origLine), len(v.Header.Columns))
 }
