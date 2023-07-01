@@ -35,6 +35,7 @@ func run() error {
 				KeyAlignRight: true,
 			},
 			NoPager: o.noPager,
+			PS: o.ps,
 		},
 	}
 

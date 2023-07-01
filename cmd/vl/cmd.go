@@ -27,6 +27,7 @@ type options struct {
 	grepRe  []*regexp.Regexp
 	label   string
 	labels  []string
+	ps      bool
 }
 
 func parseArgs() *options {
@@ -42,6 +43,7 @@ func parseArgs() *options {
 	flag.BoolVarP(&o.noPager, "no-pager", "", false, "Output without pager")
 	flag.StringArrayVarP(&o.grep, "grep", "g", []string{}, "Grep condition to filter lines")
 	flag.StringVarP(&o.label, "label", "l", "", "Show only matching items of labels")
+	flag.BoolVarP(&o.ps, "ps", "", false, "Parse lines separated by one space. i.e. 'ps' command")
 
 	flag.Parse()
 

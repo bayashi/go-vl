@@ -48,6 +48,27 @@ RESTARTS: 0
      AGE: 9s
 ```
 
+And `--ps` flag to parse lines separated by only 1 space between columns.
+
+```
+$ ps
+  PID TTY          TIME CMD
+12523 pts/4    00:00:00 bash
+30087 pts/4    00:00:00 ps
+
+$ ps | vl --ps
+********** 1 **********
+ PID: 12523
+ TTY: pts/4
+TIME: 00:00:00
+ CMD: bash
+********** 2 **********
+ PID: 30087
+ TTY: pts/4
+TIME: 00:00:00
+ CMD: ps
+```
+
 ## Full Options
 
 ```
@@ -58,6 +79,7 @@ Options:
   -h, --help               Show help (This message) and exit
   -l, --label string       Show only matching items of labels
       --no-pager           Output without pager
+      --ps                 Parse lines separated by one space. i.e. 'ps' command
   -v, --version            Show version and build info and exit
 ```
 
