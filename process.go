@@ -59,7 +59,7 @@ func (v *VL) processLine(out io.Writer, origLine []byte) {
 		vt.Header(strconv.Itoa(v.Count))
 		for i, elem := range v.parseLine(origLine) {
 			if !v.Header.Columns[i].Show {
-				return
+				continue
 			}
 			vt.Row(v.Header.Columns[i].Label, elem)
 		}
