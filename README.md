@@ -63,6 +63,23 @@ Options:
 
 ## Installation
 
+### homebrew install
+
+If you are using Mac:
+
+```sh
+brew tap bayashi/tap
+brew install bayashi/tap/go-vl
+```
+
+### binary install
+
+Download binary from here: https://github.com/bayashi/go-vl/releases
+
+### go install
+
+If you have golang envvironment:
+
 ```cmd
 go install github.com/bayashi/go-vl/cmd/vl@latest
 ```
