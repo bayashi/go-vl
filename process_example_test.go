@@ -114,7 +114,7 @@ func Example_processLine_ps() {
 				KeyAlignRight: true,
 			},
 			NoPager: true,
-			PS: true,
+			PS:      true,
 		},
 	}
 
