@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	ENV_KEY_PAGER = "PAGER"
+	ENV_KEY_PAGER      = "PAGER"
 	ENV_VALUE_NO_PAGER = "NOPAGER"
 )
 
